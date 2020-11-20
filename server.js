@@ -160,7 +160,80 @@ function employeesByManager() {
 };
 
 function addEmployee() {
+    prompt([
+        {
+            name: 'firstName',
+            message: 'What is the employees first name?'
+        },
+        {
+            name: 'lastName',
+            message: 'What is the employees last name?'
+        }
+    ])
+    .then(res => {
+        let firstName = res.firstName;
+        let lastName = res.lastName;
 
+        db.viewAllRoles()
+        .then(([rows]) => {
+            let roles = rows;
+            const roleChoices = roles.map(({ id, title }) => ({
+                name: title,
+                value: id
+            }));
+
+            prompt([
+                {
+                    type: 'list',
+                    name: 'roleId',
+                    message: 'What is the employees role?',
+                    choices: roleChoices
+                }
+            ])
+            .then(res => {
+                let roleId = res.roleId;
+
+                db.viewAllEmployees()
+                .then(([rows]) => {
+                    let employees = rows;
+                    const managerChoices = employees.map(({ id, first_name, last_name }) => ({
+                        name: `${first_name} ${last_name}`,
+                        value: id
+                    }));
+
+                    managerChoices.push({ name: 'none', value: null });
+                    
+                    prompt([
+                        {
+                            type: 'list',
+                            name: 'managerId',
+                            message: 'Who is the employees manager?',
+                            choices: managerChoices
+                        }
+                    ])
+                    .then(res => {
+                        let managerId = res.managerId;
+                        let newEmployee = {
+                            first_name: firstName,
+                            last_name: lastName,
+                            role_id: roleId,
+                            manager_id: managerId
+                        }
+
+                        db.addNewEmployee(newEmployee);
+                    })
+                    .then(() => {
+                        console.log(`
+===============================================
+Added ${firstName} ${lastName} to the database!
+===============================================
+`);
+                    })
+                    .then(() => mainPrompts());
+                })
+            })
+        })
+    })
 };
 
 function removeEmployee() {
@@ -176,7 +249,13 @@ function updateEmployeeManager() {
 };
 
 function allRoles() {
-
+    db.viewAllRoles()
+    .then(([rows]) => {
+        let roles = rows;
+        console.log('==========================================');
+        console.table(roles);
+    })
+    .then(() => mainPrompts());
 };
 
 function addRole() {

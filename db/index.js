@@ -47,6 +47,16 @@ class Database {
             newEmployee
         );
     }
+
+
+    // view all roles
+    viewAllRoles() {
+        return this.connection.promise().query(
+            `SELECT roles.id, roles.title, departments.name AS department, roles.salary 
+            FROM roles
+            LEFT JOIN departments ON roles.department_id = departments.id;`
+        );
+    }
 };
 
 module.exports = new Database(connection);
