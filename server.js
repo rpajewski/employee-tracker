@@ -1,7 +1,12 @@
-const db = require('/db/index.js');
+const db = require('./db/index.js');
 const { prompt } = require('inquirer');
 
 require('console.table');
+
+function init() {
+    console.log('Welcome to Employee Tracker!\n');
+    mainPrompts();
+};
 
 function mainPrompts() {
     prompt([
@@ -123,4 +128,71 @@ function mainPrompts() {
                 quit();
         }
     })
-}
+};
+
+function allEmployees() {
+    db.viewAllEmployees()
+    .then(([rows]) => {
+        let employees = rows;
+        console.table(employees);
+    })
+    .then(() => mainPrompts());
+};
+
+function employeesByDepartment() {
+
+};
+
+function employeesByManager() {
+
+};
+
+function addEmployee() {
+
+};
+
+function removeEmployee() {
+
+};
+
+function updateEmployeeRole() {
+
+};
+
+function updateEmployeeManager() {
+
+};
+
+function allRoles() {
+
+};
+
+function addRole() {
+
+};
+
+function removeRole() {
+
+};
+
+function allDepartments() {
+
+};
+
+function addDepartment() {
+
+};
+
+function removeDepartment() {
+
+};
+
+function viewSalaryBudgetByDepartment() {
+
+};
+
+function quit() {
+
+};
+
+init();
