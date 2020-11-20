@@ -40,6 +40,16 @@ class Database {
         );
     }
 
+    // find employee by id
+    findEmployeeById(employeeId) {
+        return this.connection.promise().query(
+            `SELECT employees.id, employees.first_name, employees.last_name
+            FROM employees
+            WHERE employees.id = ?;`,
+            employeeId
+        );
+    }
+
     // add new employee
     addNewEmployee(newEmployee) {
         return this.connection.promise().query(
@@ -48,6 +58,17 @@ class Database {
         );
     }
 
+    // remove an employee
+    deleteEmployee(employeeId) {
+        return this.connection.promise().query(
+            `DELETE FROM employees WHERE id = ?;`,
+            employeeId
+        );
+    }
+
+    // update employee role
+
+    // update employee manager
 
     // view all roles
     viewAllRoles() {
@@ -57,6 +78,18 @@ class Database {
             LEFT JOIN departments ON roles.department_id = departments.id;`
         );
     }
+
+    // add new role
+
+    // remove role
+
+    // view all departments
+
+    // add new department
+
+    // remove department
+
+    // view salary budget by department
 };
 
 module.exports = new Database(connection);

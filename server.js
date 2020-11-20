@@ -237,7 +237,39 @@ Added ${firstName} ${lastName} to the database!
 };
 
 function removeEmployee() {
+    db.viewAllEmployees()
+    .then(([rows]) => {
+        let employees = rows;
+        const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
+            name: `${first_name} ${last_name}`,
+            value: id
+        }));
 
+        prompt([
+            {
+                type: 'list',
+                name: 'employeeId',
+                message: 'Which employee would you like to remove? (Warning: this will be permanent)',
+                choices: employeeChoices
+            }
+        ])
+        .then(res => db.findEmployeeById(res.employeeId))
+        .then(([rows]) => {
+            let firstName = rows[0].first_name;
+            let lastName = rows[0].last_name;
+            let employeeID = rows[0].id;
+
+            db.deleteEmployee(employeeID)
+            .then(() => {
+                console.log(`
+===================================================
+Removed ${firstName} ${lastName} from the database!
+===================================================
+`)
+            })
+        })
+        .then(() => mainPrompts());
+    })
 };
 
 function updateEmployeeRole() {
