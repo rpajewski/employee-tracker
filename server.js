@@ -79,6 +79,7 @@ function mainPrompts() {
         }
     ]).then(res => {
         let choice = res.choice;
+        console.log('\n');
         console.log(choice);
 
         switch (choice) {
@@ -134,17 +135,28 @@ function allEmployees() {
     db.viewAllEmployees()
     .then(([rows]) => {
         let employees = rows;
+        console.log('===================================================================================');
         console.table(employees);
     })
     .then(() => mainPrompts());
 };
 
 function employeesByDepartment() {
-
+    db.findEmployeesByDepartment()
+    .then(([rows]) => {
+        let departmentEmployees = rows;
+        console.table(departmentEmployees);
+    })
+    .then(() => mainPrompts());
 };
 
 function employeesByManager() {
-
+    db.findEmployeesByManager()
+    .then(([rows]) => {
+        let managedEmployees = rows;
+        console.table(managedEmployees);
+    })
+    .then(() => mainPrompts());
 };
 
 function addEmployee() {
