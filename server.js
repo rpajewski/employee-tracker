@@ -331,7 +331,63 @@ Removed ${firstName} ${lastName} from the database!
 };
 
 function updateEmployeeRole() {
+    db.viewAllEmployees()
+    .then(([rows]) => {
+        let employees = rows;
+        const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
+            name: `${first_name} ${last_name}`,
+            value: id
+        }));
 
+        prompt([
+            {
+                type: 'list',
+                name: 'employeeId',
+                message: 'Which employee would you like to update?',
+                choices: employeeChoices
+            }
+        ])
+        .then(res => db.findEmployeeById(res.employeeId))
+        .then(([row]) => {
+            let firstName = row[0].first_name;
+            let lastName = row[0].last_name;
+            let employeeId = row[0].id;
+            let roleId = row[0].role_id;
+
+            db.viewAllRoles()
+            .then(([rows]) => {
+                let roles = rows;
+                const roleChoices = roles.map(({ id, title }) => ({
+                    name: title,
+                    value: id
+                }));
+
+                prompt([
+                    {
+                        type: 'list',
+                        name: 'newRoleId',
+                        message: 'What is this employees role?',
+                        choices: roleChoices
+                    }
+                ])
+                .then(res => db.findRolebyId(res.newRoleId))
+                .then(([row]) => {
+                    let roleId = row[0].id;
+                    let roleTitle = row[0].title;
+
+                    db.setEmployeeRole(roleId, employeeId)
+                    .then(() => {
+                        console.log(`
+====================================================
+${firstName} ${lastName}'s title is now ${roleTitle}
+====================================================
+                        `)
+                    })
+                })
+                .then(() => mainPrompts());
+            })
+        })
+    })
 };
 
 function updateEmployeeManager() {
