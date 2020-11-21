@@ -80,7 +80,6 @@ function mainPrompts() {
     ]).then(res => {
         let choice = res.choice;
         console.log('\n');
-        console.log(choice);
 
         switch (choice) {
             case 'ALL_EMPLOYEES':
@@ -135,6 +134,7 @@ function allEmployees() {
     db.viewAllEmployees()
     .then(([rows]) => {
         let employees = rows;
+        console.log('All Employees Table');
         console.log('===================================================================================');
         console.table(employees);
     })
@@ -142,21 +142,41 @@ function allEmployees() {
 };
 
 function employeesByDepartment() {
-    db.findEmployeesByDepartment()
+    db.viewAllDepartments()
     .then(([rows]) => {
-        let departmentEmployees = rows;
-        console.table(departmentEmployees);
+        let departments = rows;
+        const departmentChoices = departments.map(({ id, name }) => ({
+            name: name,
+            value: id
+        }));
+
+        prompt([
+            {
+                type: 'list',
+                name: 'departmentId',
+                message: 'Which department would you like to retrieve employees from?',
+                choices: departmentChoices
+            }
+        ])
+        .then(res => db.findDepartmentbyId(res.departmentId))
+        .then(([row]) => {
+            let departmentTitle = row[0].name;
+            let departmentId = row[0].id;
+
+            db.findEmployeesByDepartment(departmentId)
+            .then(([rows]) => {
+                let departmentEmployees = rows;
+                console.log(`\nEmployees From ${departmentTitle}`);
+                console.log('============================================')
+                console.table(departmentEmployees);
+            })
+            .then(() => mainPrompts());
+        })
     })
-    .then(() => mainPrompts());
 };
 
 function employeesByManager() {
-    db.findEmployeesByManager()
-    .then(([rows]) => {
-        let managedEmployees = rows;
-        console.table(managedEmployees);
-    })
-    .then(() => mainPrompts());
+
 };
 
 function addEmployee() {
@@ -254,10 +274,10 @@ function removeEmployee() {
             }
         ])
         .then(res => db.findEmployeeById(res.employeeId))
-        .then(([rows]) => {
-            let firstName = rows[0].first_name;
-            let lastName = rows[0].last_name;
-            let employeeID = rows[0].id;
+        .then(([row]) => {
+            let firstName = row[0].first_name;
+            let lastName = row[0].last_name;
+            let employeeID = row[0].id;
 
             db.deleteEmployee(employeeID)
             .then(() => {
@@ -284,6 +304,7 @@ function allRoles() {
     db.viewAllRoles()
     .then(([rows]) => {
         let roles = rows;
+        console.log('All Employee Roles');
         console.log('==========================================');
         console.table(roles);
     })
@@ -307,7 +328,38 @@ function addDepartment() {
 };
 
 function removeDepartment() {
+    db.viewAllDepartments()
+    .then(([rows]) => {
+        let departments = rows;
+        const departmentChoices = departments.map(({ id, name }) => ({
+            name: name,
+            value: id
+        }));
 
+        prompt([
+            {
+                type: 'list',
+                name: 'departmentId',
+                message: 'Which department would you like to remove? (Warning this is permanent and will delete all employees in this department!)',
+                choices: departmentChoices
+            }
+        ])
+        .then(res => db.findDepartmentbyId(res.departmentId))
+        .then(([row]) => {
+            let departmentTitle = row[0].name;
+            let departmentId = row[0].id;
+
+            db.deleteDepartment(departmentId)
+            .then(() => {
+                console.log(`
+=============================================
+Removed ${departmentTitle} from the database!
+=============================================
+                `)
+            })
+            .then(() => mainPrompts());
+        })
+    })
 };
 
 function viewSalaryBudgetByDepartment() {

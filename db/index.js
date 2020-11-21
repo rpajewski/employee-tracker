@@ -22,7 +22,7 @@ class Database {
             `SELECT employees.id, employees.first_name, employees.last_name, roles.title
             FROM employees
             LEFT JOIN roles ON employees.role_id = roles.id
-            LEFT JOIN departments ON role.department_id = departments.id
+            LEFT JOIN departments ON roles.department_id = departments.id
             WHERE departments.id = ?;`,
             departmentId
         );
@@ -84,10 +84,31 @@ class Database {
     // remove role
 
     // view all departments
+    viewAllDepartments() {
+        return this.connection.promise().query(
+            `SELECT departments.id, departments.name FROM departments;`
+        );
+    }
+
+    // find department by id
+    findDepartmentbyId(departmentId) {
+        return this.connection.promise().query(
+            `SELECT departments.id, departments.name
+            FROM departments
+            WHERE departments.id = ?;`,
+            departmentId
+        );
+    }
 
     // add new department
 
     // remove department
+    deleteDepartment(departmentId) {
+        return this.connection.promise().query(
+            `DELETE FROM departments WHERE id = ?;`,
+            departmentId
+        );
+    }
 
     // view salary budget by department
 };
