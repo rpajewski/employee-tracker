@@ -1,5 +1,6 @@
 const db = require('./db/index.js');
 const { prompt } = require('inquirer');
+const { deleteRole, viewAllDepartments } = require('./db/index.js');
 
 require('console.table');
 
@@ -509,15 +510,72 @@ ${roleTitle} role was added to the database!
 };
 
 function removeRole() {
+    db.viewAllRoles()
+    .then(([rows]) => {
+        let roles = rows;
+        const roleChoices = roles.map(({ id, title }) => ({
+            name: title,
+            value: id
+        }));
 
+        prompt([
+            {
+                type: 'list',
+                name: 'roleId',
+                message: 'Which role would you like to delete? (Warning this will permanently delete the role and all employees with this role!)',
+                choices: roleChoices
+            }
+        ])
+        .then(res => db.findRolebyId(res.roleId))
+        .then(([row]) => {
+            let roleTitle = row[0].title;
+            let roleId = row[0].id;
+
+            db.deleteRole(roleId)
+            .then(() => {
+                console.log(`
+===================================================
+Removed ${roleTitle} role from the database!
+===================================================
+                `)
+            })
+        })
+        .then(() => mainPrompts());
+    })
 };
 
 function allDepartments() {
-
+    db.viewAllDepartments()
+    .then(([rows]) => {
+        let departments = rows;
+        console.log('All Departments');
+        console.log('===============');
+        console.table(departments);
+    })
+    .then(() => mainPrompts());
 };
 
 function addDepartment() {
+        prompt([
+            {
+                name: 'name',
+                message: 'What is the new department you would like to add?'
+            }
+        ])
+        .then((res) => {
+            let departmentName = res.name;
+            let newDepartment = { name: departmentName };
 
+            db.addNewDepartment(newDepartment)
+            .then(() => {
+                console.log(`
+=======================================================
+${departmentName} department was added to the database!
+=======================================================
+                `)
+            })
+        })
+        .then(() => mainPrompts());
 };
 
 function removeDepartment() {
@@ -545,9 +603,9 @@ function removeDepartment() {
             db.deleteDepartment(departmentId)
             .then(() => {
                 console.log(`
-=============================================
-Removed ${departmentTitle} from the database!
-=============================================
+========================================================
+Removed the ${departmentTitle} department from the database!
+========================================================
                 `)
             })
             .then(() => mainPrompts());

@@ -122,6 +122,12 @@ class Database {
     }
 
     // remove role
+    deleteRole(roleId) {
+        return this.connection.promise().query(
+            `DELETE FROM roles WHERE id = ?;`,
+            roleId
+        );
+    }
 
     // view all departments
     viewAllDepartments() {
@@ -141,6 +147,12 @@ class Database {
     }
 
     // add new department
+    addNewDepartment(newDepartment) {
+        return this.connection.promise().query(
+            `INSERT INTO departments SET ?;`,
+            newDepartment
+        );
+    }
 
     // remove department
     deleteDepartment(departmentId) {
