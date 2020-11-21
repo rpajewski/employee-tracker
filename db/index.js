@@ -163,6 +163,15 @@ class Database {
     }
 
     // view salary budget by department
+    viewDepartmentBudgets() {
+        return this.connection.promise().query(
+            `SELECT departments.id, departments.name, SUM(roles.salary) AS budget
+            FROM employees 
+            LEFT JOIN roles ON employees.role_id = roles.id
+            LEFT JOIN departments ON roles.department_id = departments.id
+            GROUP BY departments.id, departments.name;`
+        );
+    }
 };
 
 module.exports = new Database(connection);

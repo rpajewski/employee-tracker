@@ -604,7 +604,7 @@ function removeDepartment() {
             .then(() => {
                 console.log(`
 ========================================================
-Removed the ${departmentTitle} department from the database!
+Removed ${departmentTitle} department from the database!
 ========================================================
                 `)
             })
@@ -614,11 +614,19 @@ Removed the ${departmentTitle} department from the database!
 };
 
 function viewSalaryBudgetByDepartment() {
-
+    db.viewDepartmentBudgets()
+    .then(([rows]) => {
+        let departmentBudget = rows;
+        console.log('Department Budgets');
+        console.log('=======================');
+        console.table(departmentBudget);
+    })
+    .then(() => mainPrompts());
 };
 
 function quit() {
-
+    console.log("Goodbye!\n");
+    process.exit();
 };
 
 init();
