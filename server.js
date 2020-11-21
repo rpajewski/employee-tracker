@@ -176,7 +176,45 @@ function employeesByDepartment() {
 };
 
 function employeesByManager() {
+    db.viewAllEmployees()
+    .then(([rows]) => {
+        let managers = rows;
+        const managerChoices = managers.map(({ id, first_name, last_name }) => ({
+            name: `${first_name} ${last_name}`,
+            value: id
+        }));
 
+        prompt([
+            {
+                type: 'list',
+                name: 'managerId',
+                message: 'Which manager would you like to search by?',
+                choices: managerChoices
+            }
+        ])
+        .then(res => db.findManagerById(res.managerId))
+        .then(([row]) => {
+            let managerFirstName = row[0].first_name;
+            let managerLastName = row[0].last_name;
+            let managerId = row[0].id;
+            
+            db.findEmployeesByManager(managerId)
+            .then(([rows]) => {
+                let managersEmployees = rows;
+                console.log('\n');
+
+                if (managersEmployees.length === 0) {
+                    console.log(`${managerFirstName} ${managerLastName} is not a manager!\n`);
+                }
+                else {
+                    console.log(`Employees Managed By ${managerFirstName} ${managerLastName}`);
+                    console.log('=========================================================')
+                    console.table(managersEmployees);
+                }
+            })
+            .then(() => mainPrompts());
+        })
+    })
 };
 
 function addEmployee() {

@@ -70,6 +70,17 @@ class Database {
 
     // update employee manager
 
+
+    // find managers by id
+    findManagerById(managerId) {
+        return this.connection.promise().query(
+            `SELECT employees.id, employees.first_name, employees.last_name
+            FROM employees
+            WHERE employees.id = ?;`,
+            managerId
+        );
+    }
+
     // view all roles
     viewAllRoles() {
         return this.connection.promise().query(
