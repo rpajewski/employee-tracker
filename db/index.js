@@ -77,7 +77,12 @@ class Database {
     }
 
     // update employee manager
-
+    setEmployeeManager(managerId, employeeId) {
+        return this.connection.promise().query(
+            `UPDATE employees SET manager_id = ? WHERE id = ?;`,
+            [ managerId, employeeId ]
+        );
+    }
 
     // find managers by id
     findManagerById(managerId) {
@@ -109,6 +114,12 @@ class Database {
     }
 
     // add new role
+    addNewRole(newRole) {
+        return this.connection.promise().query(
+            `INSERT INTO roles SET ?;`,
+            newRole
+        );
+    }
 
     // remove role
 
