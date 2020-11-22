@@ -10,7 +10,7 @@ GitHub: https://github.com/rpajewski/employee-tracker
 * [Installation](#installation)
 * [License](#license)
 * [Badges](#badges)
-* [Tests](#tests)
+* [video](#video)
 
 ## Installation
 User will need to run Node.js with MySQL2, Inquirer and Console.table. NPM i mysql2/inquirer/console.table.
