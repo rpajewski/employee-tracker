@@ -1,11 +1,31 @@
 const db = require('./db/index.js');
 const { prompt } = require('inquirer');
-const { deleteRole, viewAllDepartments } = require('./db/index.js');
+const logo = require('asciiart-logo');
 
 require('console.table');
 
 function init() {
-    console.log('Welcome to Employee Tracker!\n');
+    const appDescription = 'A command-line application ' +
+    'to manage a companys employee database, using ' +
+    'Node.js, Inquirer and MySQL.';
+ 
+    console.log(
+        logo({
+            name: 'Employee Tracker',
+            font: 'Roman',
+            lineChars: 10,
+            padding: 2,
+            margin: 3,
+            borderColor: 'grey',
+            logoColor: 'bold-green',
+            textColor: 'green',
+        })
+        .emptyLine()
+        .right('version 1.0')
+        .emptyLine()
+        .center(appDescription)
+        .render()
+    );
     mainPrompts();
 };
 
