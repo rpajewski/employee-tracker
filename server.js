@@ -7,7 +7,10 @@ require('console.table');
 function init() {
     const appDescription = 'A command-line application ' +
     'to manage a companys employee database, using ' +
-    'Node.js, Inquirer and MySQL.';
+    'Node.js, Inquirer and MySQL. This content management ' +
+    'system (CMS) will allow the user to view all employees, ' +
+    'departments and roles. The user can add, remove or update ' +
+    'each catagory easily while maintaining a clean database.';
  
     console.log(
         logo({
@@ -645,7 +648,20 @@ function viewSalaryBudgetByDepartment() {
 };
 
 function quit() {
-    console.log("Goodbye!\n");
+    console.log(
+        logo({
+            name: 'Goodbye',
+            font: 'Roman',
+            lineChars: 10,
+            padding: 2,
+            margin: 3,
+            borderColor: 'grey',
+            logoColor: 'bold-green',
+            textColor: 'green',
+        })
+        .center('Thank you for using Employee Tracker!')
+        .render()
+    );
     process.exit();
 };
 
